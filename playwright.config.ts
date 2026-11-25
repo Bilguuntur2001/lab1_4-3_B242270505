@@ -22,14 +22,24 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  /* HTML report-ийг `report/` хавтаст гаргана (репозиторид хадгалагдана), автоматаар нээхгүй */
+  reporter: [['html', { outputFolder: 'report', open: 'never' }], ['list']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    /* Бүх тестийн goto('/') нь энэ хаяг руу очно */
+    baseURL: 'https://www.saucedemo.com',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    /* saucedemo нь элементүүддээ data-test="..." атрибут ашигладаг тул
+       getByTestId()-г data-testid биш data-test атрибут руу чиглүүлнэ */
+    testIdAttribute: 'data-test',
+
+    /* Тест бүрийн trace (алхам бүрийн DOM snapshot, сүлжээ, console) хадгална.
+       Үзэх: npx playwright show-trace test-results/<тест>/trace.zip */
+    trace: 'on',
+
+    /* Тест ажиллаж буй бичлэг (video) ба унасан үеийн скриншот */
+    video: 'on',
+    screenshot: 'only-on-failure',
   },
 
   /* Configure projects for major browsers */
